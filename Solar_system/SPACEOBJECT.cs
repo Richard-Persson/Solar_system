@@ -6,6 +6,20 @@ using System.Windows.Markup;
 namespace SpaceSim{
     public class SpaceObject
     {
+
+        //Distance to sun
+        public int orbital_radius { get; set; }
+        //How long around the sun
+        public int orbital_period { get; set; }
+
+        public int object_radius { get; set; }
+        //Length of day
+        public int rotational_period { get; set; }
+
+        public Moon moon { get; set; }
+        public Color color { get; set; }
+
+
         public string name { get; }
         public SpaceObject(String name) {
 
@@ -22,6 +36,21 @@ namespace SpaceSim{
             
         }
 
+        public Point CalculatePosition(int tid)
+        {
+
+            double radians = (2 * Math.PI * tid) / orbital_period;
+
+            double x = orbital_radius * Math.Cos(radians);
+
+            if (moon != null)
+                moon.orbital_radius = moon.orbital_radius + this.orbital_radius;
+
+            double y = orbital_radius * Math.Sin(radians);
+
+
+            return new Point((int)x, (int)y);
+        }
 
     }
 
@@ -30,7 +59,8 @@ namespace SpaceSim{
     {
         private Point p = new Point(0, 0);
         private int time = 0;
-        public Star(string name) : base(name) { }
+        public int object_radius {  get; set; }
+        public Star(string name) : base(name) { base.object_radius = 696340; }
 
         public Point P{ get { return p; } }
         public int Time { get { return time; } }
@@ -46,32 +76,26 @@ namespace SpaceSim{
 
     public class Planet : SpaceObject
     {
-
-        //Distance to sun
-        public int orbital_radius { get; set; }
-        //How long around the sun
-        public int orbital_period { get; }
-
         public int object_radius { get; set; }
-        //Length of day
-        public int rotational_period{ get; set; }
 
-        public Moon moon { get; set; }
-        private Color color { get; set; }
+        public Planet(string name, int object_radius,int orbital_radius, int orbital_period,int rotational_period, Moon moon) : base(name) {
+          
+            base.object_radius=object_radius;
+            base.orbital_radius = orbital_radius;
+            base.orbital_period = orbital_period;
+            base.rotational_period = rotational_period;
+            base.moon = moon;
 
-    public Planet(string name,int orbital_radius, int orbital_period,int rotational_period, Moon moon) : base(name) { 
-            this.orbital_radius = orbital_radius;
-            this.orbital_period = orbital_period;
-            this.rotational_period = rotational_period;
-            this.moon = moon;
         }
 
 
-       public Planet( String name,int orbital_radius, int orbital_period,int rotational_period) : base(name)
+       public Planet( string name,int object_radius,int orbital_radius, int orbital_period,int rotational_period) : base(name)
         {
-            this.orbital_radius = orbital_radius;
-            this.orbital_period = orbital_period;
-            this.rotational_period = rotational_period;
+            base.object_radius =object_radius;
+            base.orbital_radius = orbital_radius;
+            base.orbital_period = orbital_period;
+            base.rotational_period = rotational_period;
+            base.color = color;
         }
 
 
@@ -97,49 +121,21 @@ namespace SpaceSim{
             }
         }
 
-        //TODO Tror beregningen fungerer nå
-        private Point CalculatePosition(int tid)
-        {
-
-            double radians = (2 * Math.PI * tid) / orbital_period;
-
-            double x = orbital_radius * Math.Cos(radians);
-
-            if (moon != null)
-                moon.orbital_radius = moon.orbital_radius + this.orbital_radius;
-
-            double y = orbital_radius * Math.Sin(radians);
-           
-
-            return new Point((int)x, (int)y);
-        }
 
     }
     
     public class Moon : Planet
     {
         public Moon(string name, int orbital_radius, int orbital_period, int rotational_period) :
-               base(name, orbital_radius, orbital_period, rotational_period) {  }
+               base(name) {  }
 
-
-        public  Point CalculatePosition(int tid)
-        {
-
-            double radians = (2 * Math.PI * tid) / orbital_period;
-
-            double x = orbital_radius * Math.Cos(radians);
-            double y = orbital_radius * Math.Sin(radians);
-
-
-            return new Point((int)x,(int) y);
-        }
       
     }
 
     public class DwarfPlanet : Planet
     {
         public DwarfPlanet(string name, int orbital_radius, int orbital_period, int rotational_period):
-                      base(name, orbital_radius, orbital_period, rotational_period) { }
+                      base(name) { }
         
 
         public override void Draw()
