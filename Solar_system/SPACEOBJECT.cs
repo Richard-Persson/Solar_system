@@ -54,7 +54,6 @@ namespace SpaceSim{
 
     }
 
-
     public class Star : SpaceObject
     {
         private Point p = new Point(0, 0);
