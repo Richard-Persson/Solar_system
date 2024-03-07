@@ -12,9 +12,9 @@ namespace SpaceSim{
         //How long around the sun
         public int orbital_period { get; set; }
 
-        public int object_radius { get; set; }
+        public double object_radius { get; set; }
         //Length of day
-        public int rotational_period { get; set; }
+        public double rotational_period { get; set; }
 
         public Moon moon { get; set; }
         public Color color { get; set; }
@@ -77,7 +77,7 @@ namespace SpaceSim{
     {
         public int object_radius { get; set; }
 
-        public Planet(string name, int object_radius,int orbital_radius, int orbital_period,int rotational_period, Moon moon) : base(name) {
+        public Planet(string name, int object_radius,int orbital_radius, int orbital_period,double rotational_period, Moon moon) : base(name) {
           
             base.object_radius=object_radius;
             base.orbital_radius = orbital_radius;
@@ -88,7 +88,7 @@ namespace SpaceSim{
         }
 
 
-       public Planet( string name,int object_radius,int orbital_radius, int orbital_period,int rotational_period) : base(name)
+       public Planet( string name,int object_radius,int orbital_radius, int orbital_period,double rotational_period) : base(name)
         {
             base.object_radius =object_radius;
             base.orbital_radius = orbital_radius;
