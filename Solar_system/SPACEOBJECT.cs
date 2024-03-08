@@ -133,8 +133,14 @@ namespace SpaceSim{
 
     public class DwarfPlanet : Planet
     {
-        public DwarfPlanet(string name, int orbital_radius, int orbital_period, int rotational_period):
-                      base(name) { }
+        public int object_radius { get; set; }
+        public DwarfPlanet(string name, int object_radius ,int orbital_radius, int orbital_period, double  rotational_period):  base(name) {
+            base.object_radius = object_radius;
+            base.orbital_radius = orbital_radius;
+            base.orbital_period = orbital_period;
+            base.rotational_period = rotational_period;
+            base.color = color;
+        }
         
 
         public override void Draw()

@@ -7,5 +7,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="559" Width="982">
 
-    <Grid Name="SolarSystem"/>
+    <Grid Name="SolarSystem">
+        <Button Content="Toggle_Orbit" HorizontalAlignment="Left" Height="43" Margin="37,68,0,0" VerticalAlignment="Top" Width="109" Click="Button_Click"/>
+        <Label Content="Label" HorizontalAlignment="Left" Margin="58,170,0,0" VerticalAlignment="Top"/>
+
+    </Grid>
+
+    
+
 </Window>
+    
