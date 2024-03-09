@@ -1,6 +1,7 @@
 ﻿using SpaceSim;
 using System;
 using System.ComponentModel;
+using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -11,9 +12,6 @@ using System.Windows.Threading;
 
 namespace Solar_system
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public static int gr1 = 500; // Merrcury, Venus, Earth, 
@@ -23,36 +21,34 @@ namespace Solar_system
         public static int gr5 = 3750;// Uranus
         public static int gr6 = 5000;// Pluto & Nepturne
 
+        //Diverse globale variabler
+        DispatcherTimer t = new();
         public static int tid = 0;
         static Boolean toggle = false;
+        static int hastighet = 100;
 
         List<Ellipse> Planeter = new List<Ellipse>();
         List<Ellipse> orbit = new List<Ellipse>();
 
-
+      
         //Initialiserer Planeter
-        Star Sun = new Star("Sun");
-        Planet mercury = new Planet("Mercury", 2440, 57_910, 88, 176);
-        Planet venus = new Planet("Venus", 6051, 108_200, 225, 243);
-        Planet earth = new Planet("Earth", 6371, 149_600, 365, 1, new Moon("The moon", 384, 27, 30));
-        Planet mars = new Planet("Mars", 3389, 227_940, 687, 1);
-        Planet jupiter = new Planet("Jupiter", 71_492, 778_330, 4333, 0.5);
-        Planet saturn = new Planet("Saturn", 58_232, 1_429_400, 10_759, 0.5, new Moon("Pan", 134, (int)0.58, 23));
-        Planet uranus = new Planet("Uranus", 25_362, 2_870_990, 30_685, 0.7);
-        Planet neptune = new Planet("Neptune", 24_622, 4_504_300, 60_190, 0.65);
-        Planet pluto = new Planet("Pluto", 1_151, 5_913_520, 90_550, 0.65);
+        Star Sun = new Star("Sun",Color.FromRgb(255,255,0));
+        Planet mercury = new Planet("Mercury", Color.FromRgb(244, 184, 119), 2440, 57_910, 88, 176);
+        Planet venus = new Planet("Venus", Color.FromRgb(211, 138, 61), 6051, 108_200, 225, 243);
+        Planet earth = new Planet("Earth", Color.FromRgb(0, 150, 0), 6371, 149_600, 365, 1, new Moon("The moon", Color.FromRgb(255, 255, 0), 384, 27, 30));
+        Planet mars = new Planet("Mars", Color.FromRgb(255, 164, 27), 3389, 227_940, 687, 1);
+        Planet jupiter = new Planet("Jupiter", Color.FromRgb(249, 225, 125), 71_492, 778_330, 4333, 0.5);
+        Planet saturn = new Planet("Saturn", Color.FromRgb(251, 241, 172), 58_232, 1_429_400, 10_759, 0.5, new Moon("Pan", Color.FromRgb(255, 255, 0),134, (int)0.58, 23));
+        Planet uranus = new Planet("Uranus", Color.FromRgb(172, 251, 241), 25_362, 2_870_990, 30_685, 0.7);
+        Planet neptune = new Planet("Neptune", Color.FromRgb(0, 114, 254), 24_622, 4_504_300, 60_190, 0.65);
+        Planet pluto = new Planet("Pluto", Color.FromRgb(250, 248, 232),  1_151, 5_913_520, 90_550, 0.65);
 
 
         public MainWindow()
         {
             InitializeComponent();
 
-
-         
-
-
-
-            //Lager planetene sin Orbit , TODO: gjør om dette til metoder og fikse NEPTUNE && PLUTO sin orbit
+            //Lager planetene sin Orbit
 
             orbit = new List<Ellipse> {
             OrbitMaker(mercury),
@@ -62,36 +58,53 @@ namespace Solar_system
             OrbitMaker(jupiter),
             OrbitMaker(saturn),
             OrbitMaker(uranus),
-        };
+            OrbitMaker(neptune),
+            OrbitMaker(pluto)
+            };
         
 
+           //Legger til tegninger i Grid 
+           orbit.ForEach(orbit => { SolarSystem.Children.Add(orbit); });
 
 
-            //Legger til tegninger i Grid TODO: Iterer gjennom en liste istedenfor
-          orbit.ForEach(orbit => { SolarSystem.Children.Add(orbit); });
-
-
-            DispatcherTimer t = new()
-            {
-                
-                Interval = TimeSpan.FromMilliseconds(100)
-            };
-
+          
+            
+            //Starter timer
             t.Tick += Timer_Tick;
-
+            t.Interval = TimeSpan.FromMilliseconds(hastighet);
             t.Start();
 
+
+            liste.Items.Add("Earth");
+
+            planet.Children.Add(Single_Planet(earth));
+
         }
+
+        private void Endre_Hastighet(int nyHastighet)
+        {
+            if (hastighet+nyHastighet > 0)
+            {
+                hastighet += nyHastighet;
+            }
+          t.Stop();
+          t.Interval = TimeSpan.FromMilliseconds(hastighet);
+          t.Start();
+
+           
+          hastighetTekst.Content = "Hastighet: " + hastighet.ToString();
+
+        }
+
 
 
         public void Timer_Tick(object? sender, EventArgs e)
         {
             RemovePlanets(Planeter);
             tid++;
-            CreatePlanets(Sun,mercury,venus,earth,mars,jupiter,saturn,uranus,neptune,pluto);
+            CreatePlanets(Sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto);
+            dager.Content = "DAG: " + tid.ToString();
         }
-
-
 
 
         //TODO Fikse skalering? 
@@ -103,7 +116,8 @@ namespace Solar_system
 
             e.Height = scale;
             e.Width  = scale;
-            e.Stroke = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+            e.Stroke = new SolidColorBrush(Color.FromRgb(128,128,128));
+            e.Fill = new SolidColorBrush(p.color);
 
             if (p.GetType() == typeof(Planet))
             {
@@ -149,68 +163,27 @@ namespace Solar_system
                
             }
 
-            switch (p.name.ToLower())
-            {
-                case "sun":
-                    e.Fill = new SolidColorBrush(Color.FromRgb(255,255,0));
-                    break;
+            return e;
+        }
 
 
-                case "venus":
+        //Når man velger en planet og zoome inn på
+        private Ellipse Single_Planet(SpaceObject p)
+        {
+            Ellipse e = new Ellipse();
 
-                    e.Fill = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-                    break;
+          
 
+            e.Height = 200;
+            e.Width = 200;
+            e.Stroke = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+            e.Fill = new SolidColorBrush(p.color);
 
-                case "earth":
-                    e.Fill = new SolidColorBrush(Color.FromRgb(0, 128, 0));
-                  
-                    break;
-
-                case "mars":
-
-                    e.Fill = new SolidColorBrush(Color.FromRgb(255, 165, 0));
-                    break;
-
-                case "saturn":
-
-                    e.Fill = new SolidColorBrush(Color.FromRgb(206, 184, 184));
-                    break;
-
-                case "mercury":
-
-                    e.Fill = new SolidColorBrush(Color.FromRgb(0, 0, 200));
-                    break;
-
-                case "jupiter":
-
-                    e.Fill = new SolidColorBrush(Color.FromRgb(235, 243, 246));
-                    break;
-
-                case "uranus":
-
-                    e.Fill = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-                    break;
-
-                case "neptune":
-
-                    e.Fill = new SolidColorBrush(Color.FromRgb(0, 0, 255));
-                    break;
-
-                case "pluto":
-
-                    e.Fill = new SolidColorBrush(Color.FromRgb(255, 241, 213));
-                    break;
-
-
-            }
-           
 
             return e;
         }
 
         private double SizeConverter(double radius){ return (  (radius / 8000) +10); }
-
 
         private void CreatePlanets(Star Sun,Planet mercury, Planet venus, Planet earth, Planet mars, Planet jupiter,
                                    Planet saturn, Planet uranus, Planet neptune, Planet pluto) {
@@ -230,29 +203,26 @@ namespace Solar_system
            EllipseMaker(pluto),
         };
 
-            Planeter.ForEach(planet => { SolarSystem.Children.Add(planet); });
+            Planeter.ForEach(planet => { SolarSystem.Children.Add(planet);  });
 
         }
 
         private void RemovePlanets(List<Ellipse> planeter)
         {
-            foreach (var planet in planeter)
-            {
-                SolarSystem.Children.Remove(planet);
-            }
+            planeter.ForEach(planet => SolarSystem.Children.Remove(planet));
         }
 
 
 
+        //Lager en sirkel av planeten
       static private Ellipse OrbitMaker(Planet planet)
         {
-            int divide;
-
-            divide = planet.orbital_radius < 200_000 ? gr1 :
-                       planet.orbital_radius < 500_000 ? gr2 :
-                       planet.orbital_radius < 1_000_000 ? gr3 :
-                       planet.orbital_radius < 2_000_000 ? gr4 :
-                       planet.orbital_radius < 3_000_000 ? gr5 : gr6;
+     
+            int divide = planet.orbital_radius < 200_000 ? gr1 :
+                         planet.orbital_radius < 500_000 ? gr2 :
+                         planet.orbital_radius < 1_000_000 ? gr3 :
+                         planet.orbital_radius < 2_000_000 ? gr4 :
+                         planet.orbital_radius < 3_000_000 ? gr5 : gr6;
 
             Ellipse e = new Ellipse();
             e.Stroke = new SolidColorBrush(Color.FromRgb(1, 1, 1));
@@ -276,6 +246,46 @@ namespace Solar_system
                 toggle = false;
             }
 
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            hastighetTekst.Content = sender.ToString();
+        }
+
+        private void Button_Click_Positive(object sender, RoutedEventArgs e)
+        {
+          
+            hastighetTekst.Content = "Hastighet: " + hastighet.ToString();
+            Endre_Hastighet(-10);
+        }
+
+        private void Button_Click_Negative(object sender, RoutedEventArgs e)
+        {
+          
+            hastighetTekst.Content = "Hastighet: " + hastighet.ToString();
+            Endre_Hastighet(10);
+          
+        }
+
+        private void liste_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            ComboBoxItem item= sender as ComboBoxItem;
+
+            if (item != null)
+            {
+                string selectedPlanet = item.Content.ToString();
+
+                switch (selectedPlanet)
+                {
+                    case "Earth":
+                        vb.Visibility = Visibility.Visible;
+                        hastighetTekst.Content = "Hei";
+                        break;
+                    
+                }
+            }
         }
     }
 }

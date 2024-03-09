@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Drawing;
 using System.Security.Cryptography;
 using System.Windows.Markup;
-
+using System.Windows.Media;
+using System.Windows;
 namespace SpaceSim{
     public class SpaceObject
     {
@@ -21,9 +21,10 @@ namespace SpaceSim{
 
 
         public string name { get; }
-        public SpaceObject(String name) {
+        public SpaceObject(String name, Color color) {
 
             this.name = name;
+           this.color = color;
         }
 
         public virtual void Draw()
@@ -59,7 +60,7 @@ namespace SpaceSim{
         private Point p = new Point(0, 0);
         private int time = 0;
         public int object_radius {  get; set; }
-        public Star(string name) : base(name) { base.object_radius = 696340; }
+        public Star(string name, Color color) : base(name,color) { base.object_radius = 696340; }
 
         public Point P{ get { return p; } }
         public int Time { get { return time; } }
@@ -77,7 +78,7 @@ namespace SpaceSim{
     {
         public int object_radius { get; set; }
 
-        public Planet(string name, int object_radius,int orbital_radius, int orbital_period,double rotational_period, Moon moon) : base(name) {
+        public Planet(string name,Color color, int object_radius,int orbital_radius, int orbital_period,double rotational_period, Moon moon) : base(name,color) {
           
             base.object_radius=object_radius;
             base.orbital_radius = orbital_radius;
@@ -88,7 +89,7 @@ namespace SpaceSim{
         }
 
 
-       public Planet( string name,int object_radius,int orbital_radius, int orbital_period,double rotational_period) : base(name)
+       public Planet( string name, Color color, int object_radius,int orbital_radius, int orbital_period,double rotational_period) : base(name,color)
         {
             base.object_radius =object_radius;
             base.orbital_radius = orbital_radius;
@@ -98,7 +99,7 @@ namespace SpaceSim{
         }
 
 
-    public Planet(string name)  : base(name) { }
+    public Planet(string name, Color color)  : base(name,color) { }
         public override void Draw() {
 
             Console.Write($"Planet      : " );
@@ -125,8 +126,8 @@ namespace SpaceSim{
     
     public class Moon : Planet
     {
-        public Moon(string name, int orbital_radius, int orbital_period, int rotational_period) :
-               base(name) {  }
+        public Moon(string name, Color color,int orbital_radius, int orbital_period, int rotational_period) :
+               base(name, color) {  }
 
       
     }
@@ -134,7 +135,7 @@ namespace SpaceSim{
     public class DwarfPlanet : Planet
     {
         public int object_radius { get; set; }
-        public DwarfPlanet(string name, int object_radius ,int orbital_radius, int orbital_period, double  rotational_period):  base(name) {
+        public DwarfPlanet(string name, Color color,int object_radius ,int orbital_radius, int orbital_period, double  rotational_period):  base(name, color) {
             base.object_radius = object_radius;
             base.orbital_radius = orbital_radius;
             base.orbital_period = orbital_period;
@@ -153,7 +154,7 @@ namespace SpaceSim{
 
     public class Comet : SpaceObject
     {
-        public Comet(string name) : base (name) { }
+        public Comet(string name, Color color) : base (name,color) { }
 
         public override void Draw()
         {
@@ -164,7 +165,7 @@ namespace SpaceSim{
 
     public class AsteroidBelt : SpaceObject
     {
-        public AsteroidBelt(string name) : base(name) { }
+        public AsteroidBelt(string name, Color color) : base(name,color) { }
 
         public override void Draw()
         {
@@ -176,7 +177,7 @@ namespace SpaceSim{
 
     public class Asteroid : AsteroidBelt
     {
-        public Asteroid(string name) : base(name) { }
+        public Asteroid(string name, Color color) : base(name, color) { }
 
         public override void Draw()
         {
