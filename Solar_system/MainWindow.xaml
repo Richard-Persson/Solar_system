@@ -15,7 +15,7 @@
         <Button Content="+" HorizontalAlignment="Left" Margin="378,332,0,0" VerticalAlignment="Top" Click="Button_Click_Positive"/>
         <ComboBox HorizontalAlignment="Left" Margin="301,374,0,0" VerticalAlignment="Top" Width="120" Name="liste" SelectionChanged="liste_SelectionChanged">
             <ComboBoxItem Content="SolarSystem"/>
-            <ComboBoxItem Content="Earth"/>
+            <ComboBoxItem Content="Earth (Ikke ferdig)"/>
         </ComboBox>
 
 

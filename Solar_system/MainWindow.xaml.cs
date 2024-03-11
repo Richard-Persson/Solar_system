@@ -99,7 +99,7 @@ namespace Solar_system
         }
 
 
-
+        //Oppdaterer posisjon på planeter
         public void Timer_Tick(object? sender, EventArgs e)
         {
          
@@ -114,6 +114,7 @@ namespace Solar_system
 
 
         
+        //Lager planetene og skalerer dem
         private Ellipse EllipseMaker( SpaceObject p)
         {
             Ellipse e = new Ellipse();
@@ -188,6 +189,8 @@ namespace Solar_system
 
         private double SizeConverter(double radius){ return (  (radius / 8000) +10); }
 
+
+        //Gjør om Fra SpaceObject til Ellipse
         private void CreatePlanets(Star Sun,Planet mercury, Planet venus, Planet earth, Planet mars, Planet jupiter,
                                    Planet saturn, Planet uranus, Planet neptune, Planet pluto) {
            
@@ -210,6 +213,7 @@ namespace Solar_system
 
         }
        
+        //Lager måne til jorden
         private void CreateMoon(Moon moon)
         {
           
@@ -220,11 +224,13 @@ namespace Solar_system
             planet.Children.Add(m);
         }
 
+        //Fjerner måne
         private void RemoveMoon()
         {
             planet.Children.Remove(m);
         }
 
+        //Fjerner alle planeter
         private void RemovePlanets(List<Ellipse> planeter)
         {
             planeter.ForEach(planet => SolarSystem.Children.Remove(planet));
@@ -232,7 +238,7 @@ namespace Solar_system
 
 
 
-        //Lager en sirkel av planeten
+        //Lager banen til alle planetene
       static private Ellipse OrbitMaker(Planet planet)
         {
      
@@ -251,6 +257,7 @@ namespace Solar_system
             return e;
         }
 
+        //Toggle for orbit
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (!toggle)
@@ -266,11 +273,13 @@ namespace Solar_system
 
         }
 
+        
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             hastighetTekst.Content = sender.ToString();
         }
 
+        //Øker hastighet
         private void Button_Click_Positive(object sender, RoutedEventArgs e)
         {
           
@@ -278,6 +287,7 @@ namespace Solar_system
             Endre_Hastighet(-10);
         }
 
+        //Minker hastighet
         private void Button_Click_Negative(object sender, RoutedEventArgs e)
         {
           
@@ -286,6 +296,7 @@ namespace Solar_system
           
         }
 
+        //Liste der man kan velge planeter og zoome inn på
         private void liste_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
@@ -300,7 +311,7 @@ namespace Solar_system
 
                 switch (selectedPlanet)
                 {
-                    case "Earth":
+                    case "Earth (Ikke ferdig)":
                         vb.Visibility = Visibility.Visible;
                         SolarSystem.Visibility = Visibility.Collapsed;
                         break;
