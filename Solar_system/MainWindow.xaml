@@ -7,15 +7,25 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="559" Width="982">
 
-    <Grid Name="SolarSystem" Margin="-290,-175,-171,-154">
+    <Grid Name="Main" Margin="-290,-175,-171,-154">
         <Button Content="Toggle_Orbit" HorizontalAlignment="Left" Height="44" Margin="301,192,0,0" VerticalAlignment="Top" Width="109" Click="Button_Click"/>
         <Label Content="Dag" HorizontalAlignment="Left" Margin="332,254,0,0" VerticalAlignment="Top" Name="dager"/>
         <Label Name="hastighetTekst" Content="Hastighet: 100" HorizontalAlignment="Left" Margin="314,293,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.066,0.136"/>
         <Button Content="-" HorizontalAlignment="Left" Margin="314,332,0,0" VerticalAlignment="Top" Click="Button_Click_Negative"/>
         <Button Content="+" HorizontalAlignment="Left" Margin="378,332,0,0" VerticalAlignment="Top" Click="Button_Click_Positive"/>
-        <ComboBox HorizontalAlignment="Left" Margin="301,374,0,0" VerticalAlignment="Top" Width="120" Name="liste" SelectionChanged="liste_SelectionChanged"/>
+        <ComboBox HorizontalAlignment="Left" Margin="301,374,0,0" VerticalAlignment="Top" Width="120" Name="liste" SelectionChanged="liste_SelectionChanged">
+            <ComboBoxItem Content="SolarSystem"/>
+            <ComboBoxItem Content="Earth"/>
+        </ComboBox>
 
-        <Viewbox Name="vb" Visibility="Collapsed">
+
+        <Grid Name="SolarSystem">
+
+            </Grid>
+     
+
+
+        <Viewbox Name="vb" Visibility="Hidden" Width="100" Height="100">
             <Grid Name="planet">
                 
             </Grid>

@@ -9,7 +9,6 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Shell;
 using System.Windows.Threading;
-
 namespace Solar_system
 {
     public partial class MainWindow : Window
@@ -26,30 +25,35 @@ namespace Solar_system
         public static int tid = 0;
         static Boolean toggle = false;
         static int hastighet = 100;
+     
 
         List<Ellipse> Planeter = new List<Ellipse>();
         List<Ellipse> orbit = new List<Ellipse>();
+
 
       
         //Initialiserer Planeter
         Star Sun = new Star("Sun",Color.FromRgb(255,255,0));
         Planet mercury = new Planet("Mercury", Color.FromRgb(244, 184, 119), 2440, 57_910, 88, 176);
         Planet venus = new Planet("Venus", Color.FromRgb(211, 138, 61), 6051, 108_200, 225, 243);
-        Planet earth = new Planet("Earth", Color.FromRgb(0, 150, 0), 6371, 149_600, 365, 1, new Moon("The moon", Color.FromRgb(255, 255, 0), 384, 27, 30));
+        Planet earth = new Planet("Earth", Color.FromRgb(0, 150, 0), 6371, 149_600, 365, 1, new Moon("The moon", Color.FromRgb(128, 128, 128), 1737, 384, 27, 30));
         Planet mars = new Planet("Mars", Color.FromRgb(255, 164, 27), 3389, 227_940, 687, 1);
         Planet jupiter = new Planet("Jupiter", Color.FromRgb(249, 225, 125), 71_492, 778_330, 4333, 0.5);
-        Planet saturn = new Planet("Saturn", Color.FromRgb(251, 241, 172), 58_232, 1_429_400, 10_759, 0.5, new Moon("Pan", Color.FromRgb(255, 255, 0),134, (int)0.58, 23));
+        Planet saturn = new Planet("Saturn", Color.FromRgb(251, 241, 172), 58_232, 1_429_400, 10_759, 0.5, new Moon("Pan", Color.FromRgb(255, 255, 0),1737, 134, (int)0.58, 23));
         Planet uranus = new Planet("Uranus", Color.FromRgb(172, 251, 241), 25_362, 2_870_990, 30_685, 0.7);
         Planet neptune = new Planet("Neptune", Color.FromRgb(0, 114, 254), 24_622, 4_504_300, 60_190, 0.65);
         Planet pluto = new Planet("Pluto", Color.FromRgb(250, 248, 232),  1_151, 5_913_520, 90_550, 0.65);
+        Moon moon = new Moon("The moon", Color.FromRgb(128, 128, 128), 1737, 384, 27, 30);
 
+
+
+        Ellipse m = new Ellipse();
 
         public MainWindow()
         {
             InitializeComponent();
 
             //Lager planetene sin Orbit
-
             orbit = new List<Ellipse> {
             OrbitMaker(mercury),
             OrbitMaker(venus),
@@ -61,23 +65,21 @@ namespace Solar_system
             OrbitMaker(neptune),
             OrbitMaker(pluto)
             };
-        
 
-           //Legger til tegninger i Grid 
-           orbit.ForEach(orbit => { SolarSystem.Children.Add(orbit); });
-
-
-          
             
+
+            //Legger til tegninger i Grid 
+            orbit.ForEach(orbit => { SolarSystem.Children.Add(orbit); });
+
+            //Lager en enkelt planet for zoom
+            planet.Children.Add(Single_Planet(earth));
+
+
             //Starter timer
             t.Tick += Timer_Tick;
             t.Interval = TimeSpan.FromMilliseconds(hastighet);
             t.Start();
 
-
-            liste.Items.Add("Earth");
-
-            planet.Children.Add(Single_Planet(earth));
 
         }
 
@@ -93,21 +95,25 @@ namespace Solar_system
 
            
           hastighetTekst.Content = "Hastighet: " + hastighet.ToString();
-
+          
         }
 
 
 
         public void Timer_Tick(object? sender, EventArgs e)
         {
+         
             RemovePlanets(Planeter);
+            RemoveMoon();
             tid++;
             CreatePlanets(Sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto);
+            CreateMoon(moon);
             dager.Content = "DAG: " + tid.ToString();
+            
         }
 
 
-        //TODO Fikse skalering? 
+        
         private Ellipse EllipseMaker( SpaceObject p)
         {
             Ellipse e = new Ellipse();
@@ -167,18 +173,15 @@ namespace Solar_system
         }
 
 
-        //Når man velger en planet og zoome inn på
+        //Når man velger en planet for og zoome inn på TODO: Fikse denne sånn at månen drar rundt planeten
         private Ellipse Single_Planet(SpaceObject p)
         {
             Ellipse e = new Ellipse();
 
-          
-
-            e.Height = 200;
-            e.Width = 200;
+            e.Height = 400;
+            e.Width = 400;
             e.Stroke = new SolidColorBrush(Color.FromRgb(0, 0, 0));
             e.Fill = new SolidColorBrush(p.color);
-
 
             return e;
         }
@@ -205,6 +208,21 @@ namespace Solar_system
 
             Planeter.ForEach(planet => { SolarSystem.Children.Add(planet);  });
 
+        }
+       
+        private void CreateMoon(Moon moon)
+        {
+          
+            m.Height = 100;
+            m.Width = 100;
+            m.Fill = new SolidColorBrush(moon.color);
+            m.Margin = new Thickness(moon.CalculatePosition(tid).X + 200, moon.CalculatePosition(tid).Y + 200, 0, 0);
+            planet.Children.Add(m);
+        }
+
+        private void RemoveMoon()
+        {
+            planet.Children.Remove(m);
         }
 
         private void RemovePlanets(List<Ellipse> planeter)
@@ -271,19 +289,28 @@ namespace Solar_system
         private void liste_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
-            ComboBoxItem item= sender as ComboBoxItem;
+            ComboBox comboBox = sender as ComboBox;
 
-            if (item != null)
+
+            if (comboBox.SelectedItem != null)
             {
-                string selectedPlanet = item.Content.ToString();
+
+                string selectedPlanet = ((ComboBoxItem)comboBox.SelectedItem).Content.ToString();
+          
 
                 switch (selectedPlanet)
                 {
                     case "Earth":
                         vb.Visibility = Visibility.Visible;
-                        hastighetTekst.Content = "Hei";
+                        SolarSystem.Visibility = Visibility.Collapsed;
                         break;
-                    
+
+                    case "SolarSystem":
+                        vb.Visibility = Visibility.Collapsed;
+                        SolarSystem.Visibility = Visibility.Visible;
+                        break;
+
+
                 }
             }
         }

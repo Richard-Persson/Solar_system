@@ -126,8 +126,18 @@ namespace SpaceSim{
     
     public class Moon : Planet
     {
-        public Moon(string name, Color color,int orbital_radius, int orbital_period, int rotational_period) :
-               base(name, color) {  }
+
+        public int object_radius { get; set; }
+
+        public Moon(string name, Color color,int object_radius,int orbital_radius, int orbital_period, int rotational_period) :
+               base(name, color) {
+
+            base.object_radius = object_radius;
+            base.orbital_radius = orbital_radius;
+            base.orbital_period = orbital_period;
+            base.rotational_period = rotational_period;
+            base.color = color;
+        }
 
       
     }
